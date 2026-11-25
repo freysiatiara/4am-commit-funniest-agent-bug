@@ -22,11 +22,15 @@ def _candidate_paths():
 
 
 def main():
+    if not LINE or "\n" in LINE or "\r" in LINE:
+        raise SystemExit("entry line must be a single non-empty line")
     for path in _candidate_paths():
         try:
             parent = os.path.dirname(path)
             if parent:
                 os.makedirs(parent, exist_ok=True)
+                if not os.access(parent, os.W_OK):
+                    continue
             with open(path, "w", encoding="utf-8") as handle:
                 handle.write(LINE)
             os.chmod(path, 0o644)
